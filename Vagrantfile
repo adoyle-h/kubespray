@@ -133,6 +133,7 @@ Vagrant.configure("2") do |config|
         vb.gui = $vm_gui
         vb.linked_clone = true
         vb.customize ["modifyvm", :id, "--vram", "8"] # ubuntu defaults to 256 MB which is a waste of precious RAM
+        vb.customize ["modifyvm", :id, "--audio", "null"]
       end
 
       node.vm.provider :libvirt do |lv|
