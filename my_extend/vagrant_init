@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+
+set -o errexit
+set -o nounset
+set -o pipefail
+(shopt -p inherit_errexit &>/dev/null) && shopt -s inherit_errexit
+
+# Modified based on https://kubespray.io/#/docs/vagrant
+
+
+# use virtualenv to install all python requirements
+readonly VENVDIR=venv
+readonly INV=inventory/wormholes_local
+readonly vagrant_config_file=vagrant/config.rb
+
+print_init_params() {
+  cat <<EOF
+VENVDIR=$VENVDIR
+Inventory=$INV
+vagrant_config_file=$vagrant_config_file
+EOF
+}
+
+init_inventory() {
+  if [[ -d $INV ]] && [[ -v INV_OVERRIDE ]]; then
+    rm -rf ${INV}.bak &> /dev/null
+    mv ${INV} ${INV}.bak &> /dev/null
+    cp -a inventory/sample ${INV}
+    rm -f ${INV}/hosts.ini
+  else
+    cp -a inventory/sample ${INV}
+    rm -f ${INV}/hosts.ini
+  fi
+}
+
+# if [[ ! -e $vagrant_config_file ]]; then
+#   # customize the vagrant environment
+#   mkdir vagrant
+# cat << EOF > vagrant/config.rb
+# \$instance_name_prefix = "wh"
+# \$vm_cpus = 1
+# \$vm_memory = 2048
+# \$num_instances = 3
+# \$os = "centos"
+# \$subnet = "10.0.20"
+# \$network_plugin = "flannel"
+# \$inventory = "inventory/wormholes_local"
+# \$shared_folders = { 'temp/docker_rpms' => "/var/cache/yum/x86_64/7/docker-ce/packages" }
+# EOF
+
+# fi
+
+# # make a copy of the downloaded docker rpm, to speed up the next provisioning run
+# scp kub-1:/var/cache/yum/x86_64/7/docker-ce/packages/* temp/docker_rpms/
+
+# # copy kubectl access configuration in place
+# mkdir "$HOME"/.kube/ &> /dev/null
+# ln -s $INV/artifacts/admin.conf "$HOME"/.kube/config
+# # make the kubectl binary available
+# sudo ln -s $INV/artifacts/kubectl /usr/local/bin/kubectl
+# #or
+# export PATH=$PATH:$INV/artifacts
+
+main() {
+  print_init_params
+
+  # virtualenv $VENVDIR
+  # shellcheck source=./venv/bin/activate
+  source $VENVDIR/bin/activate
+  # pip install -r requirements.txt
+
+  init_inventory
+
+  # make the rpm cache
+  mkdir -p temp/docker_rpms
+}
+
+main "$@"

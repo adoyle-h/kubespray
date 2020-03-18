@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+set -o errexit
+set -o nounset
+set -o pipefail
+(shopt -p inherit_errexit &>/dev/null) && shopt -s inherit_errexit
+
+readonly SCRIPT_DIR="$(cd -P -- "$(dirname -- "$0")" && pwd -P)"
+
+readonly INV=wormholes_local
+
+VAGRANT_CWD=$SCRIPT_DIR/.. vagrant destroy --force
+
+files=(
+  vagrant_ansible_inventory
+  artifacts
+  credentials
+)
+
+for file in "${files[@]}"; do
+  path="$SCRIPT_DIR"/../inventory/$INV/$file
+  echo "[TODO] rm $path"
+  rm -rf "$path"
+done
+
+echo '[DONE]'

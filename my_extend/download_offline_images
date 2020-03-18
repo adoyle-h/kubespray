@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+set -o errexit
+set -o nounset
+set -o pipefail
+(shopt -p inherit_errexit &>/dev/null) && shopt -s inherit_errexit
+
+readonly SCRIPT_DIR="$(cd -P -- "$(dirname -- "$0")" && pwd -P)"
+
+source $SCRIPT_DIR/image_repos.sh
+
+declare -a images=(
+  etcd
+  cni
+  kubeadm
+  kubelet
+  kubectl
+  flannel
+  flannel_cni
+  pod_infra
+  helm
+  coredns
+  local_volume_provisioner
+  local_path_provisioner
+)
+
+download_images() {
+  local image
+  local images_dir=$SCRIPT_DIR/../images
+
+  mkdir -p "$dest_dir"
+
+  for image in "${images[@]}"; do
+    echo "[TODO] download image: $image"
+    docker pull
+    docker save "$image" -o images_dir
+
+  done
+}
+
+main() {
+  download_images
+}
+
+main "$@"
