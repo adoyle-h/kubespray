@@ -1,0 +1,25 @@
+kubelet_download_url: "https://storage.googleapis.com.cnpmjs.org/kubernetes-release/release/{{ kube_version }}/bin/linux/{{ image_arch }}/kubelet"
+kubectl_download_url: "https://storage.googleapis.com.cnpmjs.org/kubernetes-release/release/{{ kube_version }}/bin/linux/{{ image_arch }}/kubectl"
+kubeadm_download_url: "https://storage.googleapis.com.cnpmjs.org/kubernetes-release/release/{{ kubeadm_version }}/bin/linux/{{ image_arch }}/kubeadm"
+etcd_download_url: "https://mirror.azure.cn/kubernetes/etcd/etcd-{{ etcd_version }}-linux-{{ image_arch }}.tar.gz"
+cni_download_url: "https://mirror.azure.cn/kubernetes/containernetworking-plugins/cni-plugins-linux-{{ image_arch }}-{{ cni_version }}.tgz"
+calicoctl_download_url: "https://github.com/projectcalico/calicoctl/releases/download/{{ calico_ctl_version }}/calicoctl-linux-{{ image_arch }}"
+crictl_download_url: "https://github.com/kubernetes-sigs/cri-tools/releases/download/{{ crictl_version }}/crictl-{{ crictl_version }}-{{ ansible_system | lower }}-{{ image_arch }}.tar.gz"
+
+download_cache_dir: "{{ inventory_dir | dirname | dirname }}/temp/kubespray_cache"
+
+download_run_once: True
+download_localhost: True
+download_force_cache: True
+
+gcr_image_repo: "gcr.azk8s.cn"
+# docker_image_repo: "docker.io"
+quay_image_repo: "quay.azk8s.cn"
+
+# download_proxy_env:
+#   http_proxy: http://10.0.2.2:8001
+#   https_proxy: https://10.0.2.2:8001
+
+# downloads:
+#   cni:
+#     use_proxy: true
