@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+
+set -o errexit
+set -o nounset
+set -o pipefail
+(shopt -p inherit_errexit &>/dev/null) && shopt -s inherit_errexit
+
+readonly SCRIPT_DIR="$(cd -P -- "$(dirname -- "$0")" && pwd -P)"
+
+# shellcheck source=./common_vars.sh
+source "$SCRIPT_DIR"/common_vars.sh
+
+readonly a=sample
+readonly b=$INV
+readonly inventory_dir="$SCRIPT_DIR/../inventory"
+readonly a_inventory=$inventory_dir/$a
+readonly b_inventory=$inventory_dir/$b
+
+diff_file() {
+  local b_filepath=$1
+  if [[ -f "$a_inventory/$b_filepath" ]]; then
+    diff -u \
+      --label "$b_filepath" \
+      --label "$b_filepath" \
+      "$a_inventory/$b_filepath" \
+      "$b_inventory/$b_filepath" \
+      | diff-so-fancy || true
+  else
+    diff -u \
+      --label "/dev/null" \
+      --label "$b_filepath" \
+      "/dev/null" \
+      "$b_inventory/$b_filepath" \
+      | diff-so-fancy || true
+  fi
+}
+
+diff_yml_files() {
+  pushd "$b_inventory"
+
+  local filepath
+  while read -rd '' filepath; do
+    diff_file "$filepath"
+  done < <(find . -type f -name '*.yml' -print0)
+
+  popd
+}
+
+main() {
+  diff_yml_files
+}
+
+main

@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+set -o errexit
+set -o nounset
+set -o pipefail
+(shopt -p inherit_errexit &>/dev/null) && shopt -s inherit_errexit
+
+readonly SCRIPT_DIR="$(cd -P -- "$(dirname -- "$0")" && pwd -P)"
+
+pip_requirements
+
+echo "[To install pip]"
+python get-pip.py wheel==0.33.1 pip==8.1.2  setuptools==0.9.8 --no-index --find-links "file://${PWD}/resources/requirements"
+
+echo "[install python requirements]"
+pip install -r requirements.txt --no-index --find-links "file://${SCRIPT_DIR}/../resources/requirements"

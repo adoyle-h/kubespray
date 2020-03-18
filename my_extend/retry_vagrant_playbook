@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+set -o errexit
+set -o nounset
+set -o pipefail
+(shopt -p inherit_errexit &>/dev/null) && shopt -s inherit_errexit
+
+readonly SCRIPT_DIR="$(cd -P -- "$(dirname -- "$0")" && pwd -P)"
+
+# shellcheck source=./common_vars.sh
+source "$SCRIPT_DIR"/common_vars.sh
+
+verbose=${1:--vv}
+
+ansible-playbook \
+  -e ansible_become_pass=vagrant \
+  -i "$SCRIPT_DIR"/../inventory/$INV \
+  -l "all,localhost" \
+  -b --flush-cache "$verbose" \
+  "$SCRIPT_DIR"/../cluster.yml
