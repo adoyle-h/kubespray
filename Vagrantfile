@@ -55,6 +55,7 @@ $override_disk_size = false
 $disk_size = "20GB"
 $local_path_provisioner_enabled = false
 $local_path_provisioner_claim_root = "/opt/local-path-provisioner/"
+$download_cache_dir = ENV['HOME'] + "/kubespray_cache"
 
 $playbook = "cluster.yml"
 
@@ -177,6 +178,14 @@ Vagrant.configure("2") do |config|
       # Disable swap for each vm
       node.vm.provision "shell", inline: "swapoff -a"
 
+      node.vm.provision "shell", inline: "yum -y install vim nmap-ncat"
+
+      if $offline_guest
+        node.vm.provision "shell",
+          run: "always",
+          inline: "eval `ip route | awk '{ if ($1 == \"default\" && $3 != \"0.0.0.0\" && $5 == \"eth0\") print \"ip route del default via \" $3; }'`"
+      end
+
       host_vars[vm_name] = {
         "ip": ip,
         "flannel_interface": "eth1",
@@ -184,7 +193,7 @@ Vagrant.configure("2") do |config|
         "kube_network_plugin_multus": $multi_networking,
         "download_run_once": "True",
         "download_localhost": "False",
-        "download_cache_dir": ENV['HOME'] + "/kubespray_cache",
+        "download_cache_dir": $download_cache_dir,
         # Make kubespray cache even when download_run_once is false
         "download_force_cache": "True",
         # Keeping the cache on the nodes can improve provisioning speed while debugging kubespray
