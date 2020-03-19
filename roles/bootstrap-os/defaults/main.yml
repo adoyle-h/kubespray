@@ -5,6 +5,8 @@ centos_epel_enabled: false
 # Use the fastestmirror yum plugin
 centos_fastestmirror_enabled: false
 
+centos_yum_keepcache: 0
+
 ## CoreOS specific variables
 # Disable locksmithd or leave it in its current state
 coreos_locksmithd_disable: false

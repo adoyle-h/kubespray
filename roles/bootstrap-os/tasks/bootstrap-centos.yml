@@ -37,6 +37,15 @@
   when:
     - http_proxy is defined
 
+- name: Set keepcache in /etc/yum.conf
+  lineinfile:
+    path: "/etc/yum.conf"
+    regexp: "^keepcache=.*"
+    line: "keepcache={{ centos_yum_keepcache }}"
+    create: true
+    state: present
+  become: true
+
 - name: Gather host facts to get ansible_distribution_major_version
   setup:
     gather_subset: '!all'

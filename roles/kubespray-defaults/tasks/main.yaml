@@ -4,3 +4,11 @@
     msg: "Check roles/kubespray-defaults/defaults/main.yml"
   tags:
     - always
+
+- name: debug variables
+  debug:
+    msg: >
+      gcr_image_repo: {{ gcr_image_repo }}
+      kube_image_repo: {{ kube_image_repo }}
+      kube_proxy_image_repo: {{ kube_proxy_image_repo }}
+      flannel_image_repo: {{ flannel_image_repo }}
