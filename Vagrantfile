@@ -55,6 +55,7 @@ $override_disk_size = false
 $disk_size = "20GB"
 $local_path_provisioner_enabled = false
 $local_path_provisioner_claim_root = "/opt/local-path-provisioner/"
+$download_cache_dir = ENV['HOME'] + "/kubespray_cache"
 
 $playbook = "cluster.yml"
 
@@ -184,7 +185,7 @@ Vagrant.configure("2") do |config|
         "kube_network_plugin_multus": $multi_networking,
         "download_run_once": "True",
         "download_localhost": "False",
-        "download_cache_dir": ENV['HOME'] + "/kubespray_cache",
+        "download_cache_dir": $download_cache_dir,
         # Make kubespray cache even when download_run_once is false
         "download_force_cache": "True",
         # Keeping the cache on the nodes can improve provisioning speed while debugging kubespray
