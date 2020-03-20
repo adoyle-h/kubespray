@@ -23,3 +23,5 @@ $shared_folders = {
 }
 
 $download_cache_dir = File.join(project_abs_dir, offline_res_path, "kubespray_cache")
+
+$offline_guest = true

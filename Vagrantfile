@@ -56,7 +56,7 @@ $disk_size = "20GB"
 $local_path_provisioner_enabled = false
 $local_path_provisioner_claim_root = "/opt/local-path-provisioner/"
 $download_cache_dir = ENV['HOME'] + "/kubespray_cache"
-
+$offline_guest = false
 $playbook = "cluster.yml"
 
 host_vars = {}
