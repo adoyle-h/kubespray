@@ -70,6 +70,15 @@
     common_required_pkgs: "{{ common_required_pkgs|default([]) + ['ipvsadm', 'ipset'] }}"
   when: kube_proxy_mode == 'ipvs'
 
+- name: Setup offline repo for CentOS
+  include_tasks: 0071-centos-system-packages.yml
+  when:
+    - ansible_distribution in ["CentOS", "RedHat"]
+    # check folder existed
+    - true
+  tags:
+    - bootstrap-os
+
 - name: Install packages requirements
   action:
     module: "{{ ansible_pkg_mgr }}"
@@ -79,7 +88,10 @@
   until: pkgs_task_result is succeeded
   retries: 4
   delay: "{{ retry_stagger | random + 3 }}"
-  when: not (ansible_os_family in ["CoreOS", "Coreos", "Container Linux by CoreOS", "ClearLinux"] or is_atomic)
+  when:
+    - not (ansible_os_family in ["CoreOS", "Coreos", "Container Linux by CoreOS", "ClearLinux"] or is_atomic)
+    # check folder existed
+    - false
   tags:
     - bootstrap-os
 
