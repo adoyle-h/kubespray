@@ -13,7 +13,8 @@ contrib/terraform/aws/credentials.tfvars
 /ssh-bastion.conf
 **/*.sw[pon]
 *~
-vagrant/
+vagrant/*
+!vagrant/config.rb
 
 # Ansible inventory
 inventory/*
