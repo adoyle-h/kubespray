@@ -115,6 +115,8 @@
 - name: check if container-selinux is available
   yum:
     list: "container-selinux"
+    disablerepo: "*"
+    enablerepo: offline
   register: yum_result
   when: ansible_distribution in ["CentOS","RedHat"] and not is_atomic
 
