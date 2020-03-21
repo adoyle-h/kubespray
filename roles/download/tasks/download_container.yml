@@ -56,8 +56,8 @@
       shell: "{{ docker_bin_dir }}/docker load < {{ image_path_cached if download_localhost else image_path_final }}"
       delegate_to: "{{ download_delegate if download_run_once else inventory_hostname }}"
       run_once: "{{ download_run_once }}"
-      register: container_load_status
-      failed_when: container_load_status | failed
+      # register: container_load_status
+      # failed_when: container_load_status
       become: "{{ user_can_become_root | default(false) or not (download_run_once and download_localhost) }}"
       when:
         - download_force_cache
@@ -86,6 +86,7 @@
       retries: 4
       become: "{{ user_can_become_root | default(false) or not download_localhost }}"
       when:
+        - not image_is_cached
         - pull_required | default(download_always_pull)
 
     # NOTE: image_changed is only valid if a pull is was needed or forced.

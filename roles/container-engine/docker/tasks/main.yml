@@ -101,6 +101,10 @@
     dest: "{{ yum_repo_dir }}/docker.repo"
   when: ansible_distribution == "Fedora" and not is_atomic
 
+# - name: Create offline docker-ce repo
+#   shell: createrepo "{{ localrepo_dir }}/docker-ce"
+#   when: ansible_distribution in ["CentOS","RedHat","OracleLinux"] and not is_atomic
+
 - name: Configure docker repository on RedHat/CentOS/Oracle Linux
   yum_repository:
     name: docker-ce
@@ -142,7 +146,7 @@
     remote_src: yes
   when: ansible_distribution in ["CentOS","RedHat","OracleLinux"] and not is_atomic
 
-- name: Edit copy of yum.conf to set obsoletes=0
+- name: Edit copy of yum_docker.conf to set obsoletes=0
   lineinfile:
     path: "{{ docker_yum_conf }}"
     state: present
@@ -150,11 +154,21 @@
     line: 'obsoletes=0'
   when: ansible_distribution in ["CentOS","RedHat","OracleLinux"] and not is_atomic
 
+- name: Edit copy of yum_docker.conf to set gpgcheck=0
+  lineinfile:
+    path: "{{ docker_yum_conf }}"
+    state: present
+    regexp: '^gpgcheck='
+    line: 'gpgcheck=0'
+  when: ansible_distribution in ["CentOS","RedHat","OracleLinux"] and not is_atomic
+
 - name: ensure docker packages are installed
   action: "{{ docker_package_info.pkg_mgr }}"
   args:
     pkg: "{{ item.name }}"
-    enablerepo: "docker-ce"
+    disablerepo: "*"
+    # enablerepo: "docker-ce"
+    enablerepo: "offline"
     force: "{{ item.force|default(omit) }}"
     conf_file: "{{ item.yum_conf|default(omit) }}"
     state: "{{ item.state | default('present') }}"

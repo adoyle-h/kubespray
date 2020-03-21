@@ -1,20 +1,15 @@
 ---
 
 - set_fact:
-    offline_repo_dir: /var/cache/yum/{{ ansible_architecture }}/{{ ansible_distribution_major_version }}/offline
+    offline_repo_dir: /var/lib/yum_repo/{{ ansible_architecture }}/{{ ansible_distribution_major_version }}/offline
 
 - name: install rpm createrepo
   shell: yum -C install -y {{ offline_repo_dir }}/createrepo/packages/*.rpm
-  # yum:
-  #   name: "{{ offline_repo_dir }}/createrepo/packages/*.rpm"
-  #   state: latest
-  #   disablerepo: "*"
   register: install_createrepo_cmd
   failed_when: "install_createrepo_cmd.rc != 0 and install_createrepo_cmd.stderr != 'Error: Nothing to do'"
 
 - name: create offline repo
   shell: createrepo {{ offline_repo_dir }}
-  register: createrepo_cmd
 
 - name: add yum_repository
   yum_repository:
@@ -22,7 +17,8 @@
     description: offline repo for kubespray
     baseurl: file://{{ offline_repo_dir }}
     enabled: no
-    gpgcheck: yes
+    gpgcheck: no
+    # gpgcheck: yes
     gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
 
 - name: Install packages requirements for CentOS
