@@ -5,7 +5,7 @@ $instance_name_prefix = "wh"
 $vm_cpus = 2
 $vm_memory = 2048
 
-$num_instances = 1
+$num_instances = 3
 $etcd_instances = $num_instances
 $kube_master_instances = $num_instances == 1 ? $num_instances : ($num_instances - 1)
 $kube_node_instances = $num_instances
@@ -26,4 +26,4 @@ $shared_folders = {
 
 $download_cache_dir = File.join(project_abs_dir, offline_res_path, "kubespray_cache")
 
-$offline_guest = true
+$offline_guest = false
