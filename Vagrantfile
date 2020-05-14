@@ -135,6 +135,11 @@ Vagrant.configure("2") do |config|
         vb.linked_clone = true
         vb.customize ["modifyvm", :id, "--vram", "8"] # ubuntu defaults to 256 MB which is a waste of precious RAM
         vb.customize ["modifyvm", :id, "--audio", "null"]
+
+        if $use_host_dns
+          vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
+          vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+        end
       end
 
       node.vm.provider :libvirt do |lv|
